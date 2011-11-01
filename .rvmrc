@@ -4,7 +4,7 @@
 # development environment upon cd'ing into the directory
 
 # First we specify our desired <ruby>[@<gemset>], the @gemset name is optional.
-environment_id="jruby-1.6.5@jruby_sinatr_sse_01"
+environment_id="jruby-1.6.4@sinatra_sse_01"
 
 #
 # Uncomment following line if you want options to be set only for given project.

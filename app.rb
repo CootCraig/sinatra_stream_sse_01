@@ -3,22 +3,25 @@ require 'set'
 require 'json'
 
 class App
-  @@Door_numbers = %w[101 102 103]
-  @@Door_events = {}
-  @@Event_streams = {}
+  @@Door_Ids = %w[101 102 103]
+  @@Door_Sensors = {}
+  @@Door_Reporters = {}
   def self.start
-    @@Door_numbers.each do |door|
-      @@Event_streams[door.to_sym] = EventStream.new(door)
-      @@Door_events[door.to_sym] = DoorEvents.new(door,@@Event_streams[door.to_sym])
-      @@Door_events[door.to_sym].start!
+    @@Door_Ids.each do |door|
+      @@Door_Reporters[door.to_sym] = ReportDoorEvent.new(door)
+      @@Door_Sensors[door.to_sym] = DoorSensor.new(door,@@Door_Reporters[door.to_sym])
+      @@Door_Sensors[door.to_sym].start!
     end
   end
   def self.door? door
-    @@Door_events.has_key? door.to_sym
+    @@Door_Sensors.has_key? door.to_sym
+  end
+  def self.add_subscriber(door,subscriber)
+    @@Door_Reporters[door.to_sym].add_subscriber(subscriber) if @@Door_Reporters[door.to_sym]
   end
 end
-class DoorEvents
-  include "Celluloid"
+class DoorSensor
+  include Celluloid
   def initialize(door,target)
     @door = door
     @target = target
@@ -26,28 +29,35 @@ class DoorEvents
   end
   def start
     while true do
-      sleep ((Random.rand 3*60) + 20)
+      sleep ((Random.rand 20) + 5)
       @open = @open ? false : true
-      @target.send({door: @door, open: @open})
+      @target.report!(door: @door, open: @open)
     end
   end
 end
-class EventStream
-  include "Celluloid"
+class ReportDoorEvent
+  include Celluloid
   def initialize(door)
     @door = door
-    @connections = Set.new
+    @subscribers = Set.new
   end
-  def add_connection(connection)
-    @connections.add connection
+  def add_subscriber(subscriber)
+    @subscribers.add subscriber
   end
-  def send(event)
-    msg = "data: #{JSON(event)}\n\n"
-    closed_connections = @connections.inject([]) { |closed,connection| if connection.close? then closed<<connection else closed end}
-    closed_connections.each { |connection| @connections.delete connection }
-    @connections.each do |connection|
-      connection << msg
-      connection.flush
+  def report(door_event)
+    msg = "data: #{JSON(door_event)}\n\n"
+    STDOUT.puts msg
+    closed_subscribers = @subscribers.inject([]) do |closed,subscriber|
+      if subscriber.closed? then
+        closed << subscriber
+      else
+        closed
+      end 
+    end
+    closed_subscribers.each { |subscriber| @subscribers.delete subscriber }
+    @subscribers.each do |subscriber|
+      subscriber << msg
+      subscriber.flush
     end
   end
 end

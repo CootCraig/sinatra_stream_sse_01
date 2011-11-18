@@ -21,8 +21,10 @@ end
 Celluloid::Actor[:show] = Show.new
 Celluloid::Actor[:Bozo] = Gen.new "Bozo"
 Celluloid::Actor[:Beezer] = Gen.new "Beezer"
+Celluloid::Actor[:elvis] = Gen.new "Elvis"
 Celluloid::Actor[:Bozo].start!
 Celluloid::Actor[:Beezer].start!
-sleep 30
+Celluloid::Actor[:elvis].start!
+sleep 20
 Celluloid::Actor[:show].show! "Shutting down"
 

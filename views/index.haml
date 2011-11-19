@@ -1,8 +1,15 @@
-!!!
+!!! 5
 %html
   %head
     %title My Sinatra Website
+    %script{:src => "jquery-1.7.min.js"}
+    %script{:src => "app.js"}
   %body
     %h1 Welcome
-    %p
-    Welcome to my website made with Sinatra and HAML
+    %p Welcome to my website made with Sinatra and HAML
+    - @doors.each do |door|
+      %h2 Door #{door}
+      %p
+        is
+        %span.open_close{:id => door} closed
+

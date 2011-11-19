@@ -6,6 +6,9 @@ class App
   @@Door_Ids = %w[101 102 103]
   @@Door_Sensors = {}
   @@Door_Reporters = {}
+  def self.door_ids
+    @@Door_Ids
+  end
   def self.start
     @@Door_Ids.each do |door|
       @@Door_Reporters[door.to_sym] = ReportDoorEvent.new(door)

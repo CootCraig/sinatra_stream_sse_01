@@ -1,15 +1,20 @@
 require 'haml'
 require 'sinatra'
 require "sinatra/streaming"
+require 'json'
 require 'app'
 
 get '/' do
+  @doors = App.door_ids
   haml :index
 end
+
 get '/door/events/:door' do
   if App::door?(params[:door].to_s)
-    stream(:keep_open) do |out|
-      App.add_connection(params[:door],out)
+    STDOUT.puts "request for #{params[:door]}"
+    stream() do |out|
+      #:keep_open 
+      #App.add_connection(params[:door],out)
       out << "data: #{JSON({door: params[:door]})}\n\n"
     end
   else
@@ -18,6 +23,12 @@ get '/door/events/:door' do
     end
   end
 end
+
+get '/stylesheets/:name.css' do
+  content_type 'text/css', :charset => 'utf-8'
+  scss(:"stylesheets/#{params[:name]}")
+end
+
 configure do
   App.start
 end

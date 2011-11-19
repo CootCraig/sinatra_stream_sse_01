@@ -3,7 +3,7 @@ require 'set'
 require 'json'
 
 class App
-  @@Door_Ids = %w[101 102 103]
+  @@Door_Ids = %w[101 102 103 201 202]
   @@Door_Sensors = {}
   @@Door_Reporters = {}
   def self.door_ids

@@ -1,15 +1,21 @@
 
 $(document).ready(function() {
   $(".open_close").each(function(i){
-    $("#log").text("ready func")
+    var logdiv = $("#log")
+    logdiv.text("ready func")
     var target = $(this)
     var door_id = target.attr('id')
     var url = "/door/events/" + door_id
-    target.text("Bam! " + url)
+    target.text("Get events from: " + url)
     var source = new EventSource(url)
     source.onmessage = function (event) {
-      $("#log").text(event.data)
-      target.text(event.data)
+      logdiv.text(event.data)
+      var status_msg = JSON.parse(event.data);
+      if (status_msg.open) {
+        target.text("Open")
+      } else {
+        target.text("Closed")
+      }
     };
   })
 });

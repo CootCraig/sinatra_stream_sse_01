@@ -2,7 +2,7 @@ require 'haml'
 require 'sinatra'
 require "sinatra/streaming"
 require 'json'
-require 'app'
+require './app'
 
 get '/' do
   @doors = App.door_ids
@@ -10,12 +10,15 @@ get '/' do
 end
 
 get '/door/events/:door' do
-  if App::door?(params[:door].to_s)
-    STDOUT.puts "request for #{params[:door]}"
+  content_type 'text/event-stream'
+  if App::door?(params[:door])
+    door = params[:door]
+    STDOUT.puts "request for #{door}"
     stream() do |out|
-      #:keep_open 
+      #:keep_open
       #App.add_connection(params[:door],out)
-      out << "data: #{JSON({door: params[:door]})}\n\n"
+      data = {door: door}
+      out << "data: #{JSON(data)}\n\n"
     end
   else
     stream do |out|

@@ -11,18 +11,18 @@ end
 
 get '/door/events/:door' do
   content_type 'text/event-stream'
+  door = params[:door]
   if App::door?(params[:door])
-    door = params[:door]
-    STDOUT.puts "request for #{door}"
-    stream() do |out|
-      #:keep_open
-      #App.add_connection(params[:door],out)
+    stream(:keep_open) do |out|
+      App.add_subscriber(door,out)
       data = {door: door}
       out << "data: #{JSON(data)}\n\n"
+      out.flush
     end
   else
     stream do |out|
-      out << "data: #{JSON({error: "No door #{params[:door].to_s}"})}\n\n"
+      data = {error: "No door #{door}"}
+      out << "data: #{JSON(data)}\n\n"
     end
   end
 end

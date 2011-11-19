@@ -34,7 +34,7 @@ class DoorSensor
     while true do
       sleep ((Random.rand 20) + 5)
       @open = @open ? false : true
-      @target.report!(door: @door, open: @open)
+      @target.report!({door: @door, open: @open})
     end
   end
 end
@@ -49,13 +49,12 @@ class ReportDoorEvent
   end
   def report(door_event)
     msg = "data: #{JSON(door_event)}\n\n"
-    STDOUT.puts msg
     closed_subscribers = @subscribers.inject([]) do |closed,subscriber|
       if subscriber.closed? then
         closed << subscriber
       else
         closed
-      end 
+      end
     end
     closed_subscribers.each { |subscriber| @subscribers.delete subscriber }
     @subscribers.each do |subscriber|

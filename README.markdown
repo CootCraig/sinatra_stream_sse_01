@@ -22,6 +22,7 @@ thin --debug -R config.ru start
 
 * Run on Windows/JRuby - Would like to use Trinidad
 * Test subscribers closing the event stream
+* Host on Heroku
 
 ## Links
 

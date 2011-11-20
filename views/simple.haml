@@ -1,0 +1,16 @@
+!!! 5
+%html
+  %head
+    %title My Sinatra Website
+    %script{:src => "jquery-1.7.min.js"}
+    %script{:src => "app.js"}
+  %body
+    %h1 Receiving Door open/close events
+    - @doors.each do |door|
+      %h3 Door #{door}
+      is
+      %span.open_close{:id => door} closed
+    %h2
+      Last Event:
+      %span#log
+

@@ -1,12 +1,17 @@
 require 'haml'
+require 'kramdown'
 require 'sinatra'
 require "sinatra/streaming"
 require 'json'
 require './app'
 
 get '/' do
+  markdown :README
+end
+
+get '/simple' do
   @doors = App.door_ids
-  haml :index
+  haml :simple
 end
 
 get '/door/events/:door' do

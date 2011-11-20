@@ -6,7 +6,7 @@ require 'json'
 require './app'
 
 get '/' do
-  markdown :README
+  markdown :'../README'
 end
 
 get '/simple' do

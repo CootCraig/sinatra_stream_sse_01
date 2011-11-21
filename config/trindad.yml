@@ -1,0 +1,5 @@
+---
+  port: 4000
+  rackup: config.ru
+  http:
+    nio: true 

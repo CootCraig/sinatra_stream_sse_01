@@ -58,6 +58,7 @@ class ReportDoorEvent
     end
     closed_subscribers.each { |subscriber| @subscribers.delete subscriber }
     @subscribers.each do |subscriber|
+      STDOUT.puts subscriber.to_s
       subscriber << msg
       subscriber.flush
     end

@@ -1,0 +1,236 @@
+==============================
+Dec 9, 2011 2:15:32 PM org.apache.catalina.core.StandardEngine startInternal
+INFO: Starting Servlet Engine: Apache Tomcat/7.0.11
+2011-12-09 14:15:33 INFO: jruby 1.6.4 (ruby-1.9.2-p136) (2011-08-23 17ea768) (Java HotSpot(TM) Client VM 1.6.0_23) [Windows 7-x86-java]
+
+==============================
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\bin\trinidad
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\sinatra-1.3.1\lib\sinatra\base.rb
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\sinatra-contrib-1.3.1\lib\sinatra\streaming.rb
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\lib\trinidad\server.rb
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\lib\trinidad\web_app.rb
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad_jars-1.0.1\lib\trinidad\jars.rb
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\rack-1.3.5\lib\rack\response.rb
+==============================
+https://github.com/nicksieger/jruby-rack/blob/master/examples/sinatra/lib/stream.rb
+==============================
+jruby --debug -S trinidad
+c:/jruby-1.6.4/lib/ruby/gems/1.8/gems/trinidad-1.2.3/bin/trinidad
+
+==============================
+module Rack
+  class Response
+    def initialize(body=[], status=200, header={}, &block)
+      @chunked = "chunked" == @header['Transfer-Encoding']
+==============================
+module Trinidad
+  class Server
+    def initialize(config = {})
+
+    def load_tomcat_server
+      @tomcat = Trinidad::Tomcat::Tomcat.new
+
+(rdb:1) p @tomcat
+#<Java::OrgApacheCatalinaStartup::Tomcat:0xc84361>
+
+== org.apache.catalina.startup.Tomcat
+Minimal tomcat starter for embedding/unit tests. 
+Tomcat supports multiple styles of configuration and startup 
+- the most common and stable is server.xml-based, 
+implemented in org.apache.catalina.startup.Bootstrap. 
+This class is for use in apps that embed tomcat. 
+Requirements: - all tomcat classes and possibly servlets are in the classpath. 
+( for example all is in one big jar, or in eclipse CP, or in any other combination ) 
+- we need one temporary directory for work files 
+- no config file is required. 
+This class provides methods to use if you have a webapp with a web.xml file, 
+but it is optional - you can use your own servlets. 
+There are a variety of 'add' methods to configure servlets and webapps. 
+
+(rdb:1) p http_configured?
+false
+(rdb:1) p @tomcat.connector
+#<Java::OrgApacheCatalinaConnector::Connector:0x94124f>
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\lib\trinidad\web_app.rb
+module Trinidad
+  class WebApp
+    def self.create(config, app_config)
+
+    def initialize(config, app_config, servlet_class = 'org.jruby.rack.RackServlet', servlet_name = 'RackServlet')
+
+    def configure_rack_servlet(servlet_class, servlet_name)
+      @servlet = {:class => servlet_class, :name => servlet_name}
+(rdb:1) p servlet_class
+"org.jruby.rack.RackServlet"
+(rdb:1) p servlet_name
+"RackServlet"
+
+module Trinidad
+  class Server
+    def initialize(config = {})
+
+    def create_web_apps
+(rdb:1) pp apps
+[[{[:context, #<Java::OrgApacheCatalinaCore::StandardContext:0x8032df>]=>nil,
+   [:app,
+    #<Trinidad::RackupWebApp:0x0000000
+     @app_config=
+      {[:context_path, ""]=>nil,
+       [:web_app_dir,
+        "C:/Users/craig/Documents/jruby/sinatra_server_sent_event_01"]=>nil,
+       [:log, "INFO"]=>nil,
+       [:rackup, "config.ru"]=>nil},
+     @class_loader=#<Java::OrgJrubyUtil::JRubyClassLoader:0x1f60430>,
+     @config=
+      {[:environment, "development"]=>nil,
+       [:context_path, ""]=>nil,
+       [:libs_dir, "lib"]=>nil,
+       [:classes_dir, "classes"]=>nil,
+       [:default_web_xml, "config/web.xml"]=>nil,
+       [:port, 4000]=>nil,
+       [:jruby_min_runtimes, 1]=>nil,
+       [:jruby_max_runtimes, 5]=>nil,
+       [:address, "localhost"]=>nil,
+       [:log, "INFO"]=>nil,
+       [:trap, true]=>nil,
+       [:ssl_port, 8443]=>nil,
+       [:ajp_port, 8009]=>nil,
+       [:config,
+        "C:/Users/craig/Documents/jruby/sinatra_server_sent_event_01/config/trin
+idad.yml"]=>
+        nil,
+       [:rackup, "config.ru"]=>nil,
+       [:web_apps,
+        {[:default,
+          {[:context_path, ""]=>nil,
+           [:web_app_dir,
+            "C:/Users/craig/Documents/jruby/sinatra_server_sent_event_01"]=>
+            nil,
+           [:log, "INFO"]=>nil,
+           [:rackup, "config.ru"]=>nil}]=>nil}]=>nil},
+     @deployment_descriptor=nil,
+     @extensions={},
+     @servlet=
+      {[:class, "org.jruby.rack.RackServlet"]=>nil,
+       [:name, "RackServlet"]=>nil}>]=>nil,
+   [:monitor,
+    "C:/Users/craig/Documents/jruby/sinatra_server_sent_event_01/tmp/restart.txt
+"]=>
+    nil}],
+ nil]
+
+module Trinidad
+  class Server
+    def initialize(config = {})
+
+    def load_host_monitor(apps)
+      @tomcat.host.add_lifecycle_listener(Trinidad::Lifecycle::Host.new(@tomcat, *apps))
+
+(rdb:1) p @tomcat.host
+#<Java::OrgApacheCatalinaCore::StandardHost:0x1696e4c>
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\lib\trinidad\lifecycle\lifecycle_listener_host.rb
+module Trinidad
+  module Lifecycle
+    class Host
+      include Trinidad::Tomcat::LifecycleListener
+      def initialize(tomcat, *contexts)
+
+(rdb:1) p Trinidad::Tomcat::LifecycleListener
+Java::OrgApacheCatalina::LifecycleListener
+
+==============================
+#2 Sinatra::Application.GET /door/events/:door
+  at line c:/Users/craig/Documents/jruby/sinatra_server_sent_event_01/site.rb:24
+get '/door/events/:door' do
+    stream(:keep_open) do |out|
+
+#1 Sinatra::Helpers.new(keep_open#NilClass)
+  at line c:/jruby-1.6.4/lib/ruby/gems/1.8/gems/sinatra-1.3.1/lib/sinatra/base.rb:292
+    def stream(keep_open = false, &block)
+      body Stream.new(scheduler, keep_open, &block)
+
+#0 Sinatra::Helpers.body(value#Sinatra::Helpers::Str...)
+  at line c:/jruby-1.6.4/lib/ruby/gems/1.8/gems/sinatra-1.3.1/lib/sinatra/base.rb:109
+    def body(value=nil, &block)
+        response.body = value
+
+(rdb:1) p value
+#<Sinatra::Helpers::Stream:0x3fcfb
+ @callbacks=[],
+ @scheduler=Sinatra::Helpers::Stream,
+ @closed=false,
+ @back=#<Proc:0xa8cd58@c:/Users/craig/Documents/jruby/sinatra_server_sent_event_01/./site.rb:24>,
+ @keep_open=:keep_open
+>
+
+(rdb:1) p response
+#<Sinatra::Response:0xa75004
+ @chunked=false,
+ @body=[],
+ @header={"Content-Type"=>"text/event-stream;charset=utf-8", "Transfer-Encoding"=>"chunked"},
+ @writer=#<Proc:0x7bf4c3@file:c:/jruby-1.6.4/lib/ruby/gems/1.8/gems/jruby-rack-1.0.10/lib/jruby-rack-1.0.10.jar!/vendor/rack-1.3.2/rack/response.rb:28 (lambda)>,
+ @block=nil,
+ @length=0,
+ @status=200
+>
+
+==============================
+c:\Users\craig\Documents\jruby\sinatra_server_sent_event_01\app.rb
+class ReportDoorEvent
+  def report(door_event)
+      subscriber << msg
+
+(rdb:1) p msg
+"data: {\"door\":\"101\",\"open\":true}\n\n"
+
+(rdb:1) p subscriber
+#<Sinatra::Helpers::Stream:0xd704f0
+ @scheduler=Sinatra::Helpers::Stream,
+ @callbacks=[],
+ @front=#<Proc:0x1e85928@file:c:/jruby-1.6.4/lib/ruby/gems/1.8/gems/jruby-rack-1.0.10/lib/jruby-rack-1.0.10.jar!/jruby/rack/response.rb:96>,
+ @closed=true,
+ @back=#<Proc:0x1355a47@c:/Users/craig/Documents/jruby/sinatra_server_sent_event_01/./site.rb:23>,
+ @keep_open=:keep_open
+>
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\sinatra-1.3.1\lib\sinatra\base.rb:273
+    class Stream
+      def <<(data)
+        @scheduler.schedule { @front.call(data.to_s) }
+
+==============================
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\bin\trinidad
+Trinidad::Server.new(opts).start
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\lib\trinidad\server.rb
+  class Server
+...
+    def initialize(config = {})
+      load_config(config)
+      load_tomcat_server
+      apps = create_web_apps
+      load_host_monitor(apps)
+    end
+...
+    def load_tomcat_server
+      @tomcat = Trinidad::Tomcat::Tomcat.new
+#<Java::OrgApacheCatalinaStartup::Tomcat:0x6d4f30>
+...
+
+    def add_service_connector(options, protocol = nil)
+      connector = Trinidad::Tomcat::Connector.new(protocol)
+
+    def add_http_connector
+...
+      connector = add_service_connector(options, options[:protocol_handler] || 'HTTP/1.1')
+      @tomcat.connector = connector
+
+

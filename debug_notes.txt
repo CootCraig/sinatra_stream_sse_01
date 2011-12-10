@@ -217,6 +217,7 @@ c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\lib\trinidad\server.rb
       load_config(config)
       load_tomcat_server
       apps = create_web_apps
+
       load_host_monitor(apps)
     end
 ...
@@ -233,4 +234,59 @@ c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\trinidad-1.2.3\lib\trinidad\server.rb
       connector = add_service_connector(options, options[:protocol_handler] || 'HTTP/1.1')
       @tomcat.connector = connector
 
+==============================
+c:\Users\craig\Documents\jruby\sinatra_server_sent_event_01\site.rb
+get '/door/events/:door' do
+  content_type 'text/event-stream'
+
+module Sinatra
+  module Helpers
+    def content_type(type = nil, params={})
+
+(rdb:1) pp response
+#<Sinatra::Response:0x000000
+ @block=nil,
+ @body=[],
+ @chunked=false,
+ @header={["Content-Type", nil]=>nil},
+ @length=0,
+ @status=200,
+ @writer=
+  #<Proc:0x13ccea@file:c:/jruby-1.6.4/lib/ruby/gems/1.8/gems/jruby-rack-1.0.10/lib/jruby-rack-1.0.10.jar
+   !/vendor/rack-1.3.2/rack/response.rb:28 (lambda)>>
+
+https://github.com/jruby/jruby-rack/blob/master/src/main/ruby/jruby/rack/response.rb
+
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\sinatra-1.3.1\lib\sinatra\base.rb
+module Sinatra
+  class Response < Rack::Response
+
+(rdb:1) pp outputstream
+#<Java::OrgApacheCatalinaConnector::CoyoteOutputStream:0x1e13ce3>
+
+(rdb:1) pp @body
+#<Rack::BodyProxy:0x0000000
+ @block=
+  #<Proc:0x10d1e0b@file:c:/jruby-1.6.4/lib/ruby/gems/1.8/gems/jruby-rack-1.0.10/lib/jruby-rack-1.0.10.jar!/vendor/rack-1.3.2/rack/commonlogger.rb:22>,
+ @body=
+  #<Sinatra::Helpers::Stream:0x0000000
+   @back=
+    #<Proc:0x1ea7821@c:/Users/craig/Documents/jruby/sinatra_server_sent_event_01/./site.rb:24>,
+   @callbacks=[],
+   @closed=false,
+   @keep_open=:keep_open,
+   @scheduler=Sinatra::Helpers::Stream>,
+ @closed=false>
+
+==============================
+c:\jruby-1.6.4\lib\ruby\gems\1.8\gems\sinatra-1.3.1\lib\sinatra\base.rb
+module Sinatra
+    class Stream
+
+      def close
+        return if @closed
+        @closed = true
+        @scheduler.schedule { @callbacks.each { |c| c.call }}
+      end
+==============================
 

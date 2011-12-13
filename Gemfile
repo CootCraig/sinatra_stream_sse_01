@@ -5,4 +5,5 @@ gem "haml"
 gem "sass"
 gem "celluloid"
 gem "kramdown"
+gem "json"
 
